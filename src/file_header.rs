@@ -4,10 +4,15 @@ use crate::modules::Version;
 
 const FILE_EXTENSION: &'static str = "wee";
 
+///The plain header is the unencrypted part of the file which contains the `wee` file extensions,
+/// the version of weecrypt used to encrypt the file with, and the nonce used to encrypt the file with.
 #[derive(Debug)]
 pub struct PlainHeader {
+    ///3 Bytes showing the `wee` file extension in utf-8.
     file_extension: [u8; 3],
+    ///The version of `weecrypt` used to encrypt the file with.
     version: Version,
+    ///The nonce used to encrypt the file with.
     pub(crate) nonce: [u8; 12],
 }
 
