@@ -2,7 +2,7 @@
 
 use crate::modules::Version;
 
-const FILE_EXTENSION: &'static str = "wee";
+const FILE_EXTENSION: &str = "wee";
 
 ///The plain header is the unencrypted part of the file which contains the `wee` file extensions,
 /// the version of weecrypt used to encrypt the file with, and the nonce used to encrypt the file with.
