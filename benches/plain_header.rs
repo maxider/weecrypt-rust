@@ -1,5 +1,5 @@
 ﻿use criterion::{criterion_group, criterion_main, Criterion};
-use weecrypt::file_header::PlainHeader;
+use weecrypt::models::PlainHeader;
 
 fn criterion_benchmark(c: &mut Criterion) {
     let p = PlainHeader::new([0; 12]);

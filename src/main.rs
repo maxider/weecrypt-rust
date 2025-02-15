@@ -5,7 +5,7 @@ use aes_gcm::{
     aead::{Aead, AeadCore, KeyInit, OsRng},
     Aes256Gcm, Key,
 };
-use weecrypt::file_header::{HiddenHeader, PlainHeader};
+use weecrypt::models::{HiddenHeader, PlainHeader};
 
 fn main() {
     // encrypte_file().unwrap();
