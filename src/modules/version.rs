@@ -29,6 +29,16 @@ impl FromStr for Version {
     }
 }
 
+impl From<[u8; 3]> for Version {
+    fn from(bytes: [u8; 3]) -> Self {
+        Version {
+            major: bytes[0],
+            minor: bytes[1],
+            patch: bytes[2],
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

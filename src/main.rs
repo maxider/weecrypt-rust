@@ -1,13 +1,11 @@
 use std::fs::File;
 use std::io::{Read, Write};
 
-use aes_gcm::{aead::{Aead, AeadCore, KeyInit, OsRng}, Aes256Gcm, Key};
-
-use crate::file_header::{HiddenHeader, PlainHeader};
-
-mod file_header;
-mod example;
-mod modules;
+use aes_gcm::{
+    aead::{Aead, AeadCore, KeyInit, OsRng},
+    Aes256Gcm, Key,
+};
+use weecrypt::file_header::{HiddenHeader, PlainHeader};
 
 fn main() {
     // encrypte_file().unwrap();
@@ -78,6 +76,6 @@ fn get_key() -> Key<Aes256Gcm> {
     let mut key: Vec<u8> = b"my_secret_key".to_vec();
     while key.len() < 32 {
         key.push(0);
-    };
+    }
     Key::<Aes256Gcm>::from_slice(&key[..]).clone()
 }
