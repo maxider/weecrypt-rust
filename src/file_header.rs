@@ -1,7 +1,5 @@
 ﻿use std::mem::size_of;
 
-use crate::modules::Version;
-
 const FILE_EXTENSION: &str = "wee";
 
 ///The plain header is the unencrypted part of the file which contains the `wee` file extensions,
