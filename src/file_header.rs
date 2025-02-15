@@ -1,5 +1,7 @@
 ﻿use std::mem::size_of;
 
+use crate::modules::Version;
+
 const FILE_EXTENSION: &'static str = "wee";
 
 #[derive(Debug)]
@@ -73,11 +75,4 @@ impl HiddenHeader {
             original_name_length: bytes[0],
         }
     }
-}
-
-#[derive(Debug)]
-pub struct Version {
-    major: u8,
-    minor: u8,
-    patch: u8,
 }

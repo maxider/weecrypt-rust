@@ -7,6 +7,7 @@ use crate::file_header::{HiddenHeader, PlainHeader};
 
 mod file_header;
 mod example;
+mod modules;
 
 fn main() {
     // encrypte_file().unwrap();
