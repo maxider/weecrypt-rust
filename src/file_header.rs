@@ -20,13 +20,10 @@ impl PlainHeader {
     pub const SIZE: usize = size_of::<Self>();
 
     pub fn new(nonce: [u8; 12]) -> Self {
+        let version: Version = env!("CARGO_PKG_VERSION").parse().expect("Invalid version");
         Self {
             file_extension: <[u8; 3]>::try_from(FILE_EXTENSION.as_bytes()).unwrap(),
-            version: Version {
-                major: 0,
-                minor: 0,
-                patch: 1,
-            },
+            version,
             nonce,
         }
     }
