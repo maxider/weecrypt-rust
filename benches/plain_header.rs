@@ -3,9 +3,9 @@ use weecrypt::file_header::PlainHeader;
 
 fn criterion_benchmark(c: &mut Criterion) {
     let p = PlainHeader::new([0; 12]);
-    let bytes: [u8; 18] = [
+    let bytes: [u8; 16] = [
         0x77, 0x65, 0x65, // "wee" file_extension
-        0x01, 0x02, 0x03, // version: major=1, minor=2, patch=3
+        0x01, // version: 1
         0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C,
     ];
     c.bench_function("as_bytes", |b| b.iter(|| p.as_bytes()));

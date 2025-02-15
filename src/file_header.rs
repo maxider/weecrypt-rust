@@ -11,8 +11,8 @@ const FILE_EXTENSION: &str = "wee";
 pub struct PlainHeader {
     ///3 Bytes showing the `wee` file extension in utf-8.
     pub file_extension: [u8; 3],
-    ///The version of `weecrypt` used to encrypt the file with.
-    pub version: Version,
+    ///The encryption version of `weecrypt` used to encrypt the file with.
+    pub version: u8,
     ///The nonce used to encrypt the file with.
     pub nonce: [u8; 12],
 }
@@ -21,7 +21,7 @@ impl PlainHeader {
     pub const SIZE: usize = size_of::<Self>();
 
     pub fn new(nonce: [u8; 12]) -> Self {
-        let version: Version = env!("CARGO_PKG_VERSION").parse().expect("Invalid version");
+        let version = 0u8;
         Self {
             file_extension: <[u8; 3]>::try_from(FILE_EXTENSION.as_bytes()).unwrap(),
             version,
@@ -30,23 +30,22 @@ impl PlainHeader {
     }
 
     #[inline(always)]
-    pub fn as_bytes(&self) -> &[u8; 18] {
+    pub fn as_bytes(&self) -> &[u8; Self::SIZE] {
         //using unsafe to make this free.
-        unsafe { &*(self as *const PlainHeader as *const [u8; 18]) }
+        unsafe { &*(self as *const PlainHeader as *const [u8; Self::SIZE]) }
     }
 
     pub fn from_bytes(bytes: &[u8; Self::SIZE]) -> Self {
         let mut file_extension = [0; 3];
-        let mut version = [0; 3];
+        let version = bytes[3];
         let mut nonce = [0; 12];
 
         file_extension.copy_from_slice(&bytes[..3]);
-        version.copy_from_slice(&bytes[3..6]);
-        nonce.copy_from_slice(&bytes[6..18]);
+        nonce.copy_from_slice(&bytes[4..Self::SIZE]);
 
         Self {
             file_extension,
-            version: version.into(),
+            version,
             nonce,
         }
     }
@@ -91,15 +90,12 @@ mod tests {
 
         println!("{:?}", bytes);
 
-        assert_eq!(bytes.len(), 18);
+        assert_eq!(bytes.len(), 16);
         //check that first 3 bytes are the file extension
         assert_eq!(bytes[..3], [119, 101, 101]);
-        //check that the next 3 bytes are the version
-        let version: Version = env!("CARGO_PKG_VERSION").parse().unwrap();
-        assert_eq!(bytes[3], version.major);
-        assert_eq!(bytes[4], version.minor);
-        assert_eq!(bytes[5], version.patch);
+        //check that the next byte is the version
+        assert_eq!(bytes[3], 0);
         //check that the last 12 bytes are the nonce and all equal to 0
-        assert_eq!(bytes[6..], [3; 12]);
+        assert_eq!(bytes[4..], [3; 12]);
     }
 }
