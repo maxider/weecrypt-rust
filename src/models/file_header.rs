@@ -1,4 +1,5 @@
-﻿use std::mem::size_of;
+﻿use std::ffi::OsString;
+use std::mem::size_of;
 
 const FILE_EXTENSION: &str = "wee";
 
@@ -50,13 +51,14 @@ impl PlainHeader {
 }
 
 #[derive(Debug)]
+#[repr(C)]
 pub struct HiddenHeader {
-    pub original_name: String,
     pub original_name_length: u8,
+    pub original_name: OsString,
 }
 
 impl HiddenHeader {
-    pub fn new(original_name: String) -> Self {
+    pub fn new(original_name: OsString) -> Self {
         Self {
             original_name_length: original_name.len() as u8,
             original_name,
@@ -65,14 +67,15 @@ impl HiddenHeader {
     pub fn as_bytes(&self) -> Vec<u8> {
         let mut bytes = Vec::new();
         bytes.push(self.original_name_length);
-        bytes.append(&mut self.original_name.as_bytes().to_vec());
+        bytes.append(&mut self.original_name.as_encoded_bytes().to_vec());
         bytes
     }
 
     pub fn from_bytes(bytes: Vec<u8>) -> Self {
+        let s = String::from_utf8(bytes[1..].to_vec()).unwrap();
         Self {
-            original_name: String::from_utf8(bytes[1..].to_vec()).unwrap(),
             original_name_length: bytes[0],
+            original_name: s.into(),
         }
     }
 }
