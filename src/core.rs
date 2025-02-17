@@ -4,18 +4,21 @@ use aes_gcm::{AeadCore, Aes256Gcm, Key, KeyInit};
 use anyhow::Context;
 use std::fs::File;
 use std::io::{Read, Write};
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
-fn encrypt<'a>(
+pub fn encrypt<'a>(
     path_to_encrypt: &Path,
     new_file_path: &'a Path,
-    key: Key<Aes256Gcm>,
+    key: &[u8],
 ) -> anyhow::Result<&'a Path> {
+    let key: Key<Aes256Gcm> = *Key::<Aes256Gcm>::from_slice(key);
+
+    // Create cipher and nonce
     let cipher = Aes256Gcm::new(&key);
     let nonce = Aes256Gcm::generate_nonce(&mut OsRng);
 
     let filename = path_to_encrypt
-        .file_stem()
+        .file_name()
         .context("Could not get file stem")?;
     let mut file = File::open(path_to_encrypt).context("Could not open file")?;
 
@@ -39,4 +42,32 @@ fn encrypt<'a>(
     file.write_all(bytes.as_ref())?;
 
     Ok(new_file_path)
+}
+
+pub fn decrypt<'a>(
+    path_to_decrypt: &Path,
+    target_diretory: &'a Path,
+    key: &[u8],
+) -> anyhow::Result<PathBuf> {
+    let key: Key<Aes256Gcm> = *Key::<Aes256Gcm>::from_slice(key);
+    let cipher = Aes256Gcm::new(&key);
+
+    let mut file = File::open(path_to_decrypt).context("Could not open file")?;
+    let mut read_buffer = Vec::new();
+    let _ = file.read_to_end(&mut read_buffer)?;
+
+    let plain = PlainHeader::from_bytes(read_buffer[..PlainHeader::SIZE].try_into().unwrap());
+    let rest_enc = &read_buffer[PlainHeader::SIZE..];
+
+    let nonce = plain.nonce;
+
+    let decrypted = cipher.decrypt(&nonce.into(), rest_enc).unwrap();
+    let size = decrypted[0];
+    let name = &decrypted[1..=size as usize];
+    let name = String::from_utf8(name.to_owned()).unwrap();
+
+    let mut file = File::create(target_diretory.join(name.clone()))?;
+    file.write_all(&decrypted[(size as usize + 1)..])?;
+
+    Ok(target_diretory.join(name))
 }

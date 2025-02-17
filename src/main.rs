@@ -1,10 +1,11 @@
-use std::fs::File;
-use std::io::{Read, Write};
-
 use aes_gcm::{
     aead::{Aead, AeadCore, KeyInit, OsRng},
     Aes256Gcm, Key,
 };
+use std::ffi::OsString;
+use std::fs::File;
+use std::io::{Read, Write};
+use std::str::FromStr;
 use weecrypt::models::{HiddenHeader, PlainHeader};
 
 fn main() {
@@ -30,7 +31,7 @@ fn encrypte_file() -> std::io::Result<()> {
     let _ = file.read_to_end(&mut plain_buffer)?;
 
     let plain = PlainHeader::new(nonce.into());
-    let hidden = HiddenHeader::new("hello.txt".to_string());
+    let hidden = HiddenHeader::new(OsString::from_str("hello.txt").unwrap());
 
     let mut file = File::create("test_123_nicht_der_alte_name.wee")?;
 
@@ -58,9 +59,9 @@ fn decrypt_file() -> std::io::Result<()> {
     let rest_enc = &read_buffer[PlainHeader::SIZE..];
 
     let nonce = plain.nonce;
-    
+
     return Ok(());
-    
+
     let decrypted = cipher.decrypt(&nonce.into(), rest_enc).unwrap();
     let size = decrypted[0];
     let name = &decrypted[1..=size as usize];
