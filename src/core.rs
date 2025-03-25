@@ -56,7 +56,7 @@ pub fn decrypt(
     let mut read_buffer = Vec::new();
     let _ = file.read_to_end(&mut read_buffer)?;
 
-    let plain = PlainHeader::from_bytes(read_buffer[..PlainHeader::SIZE].try_into().unwrap());
+    let plain = PlainHeader::from_bytes(read_buffer[..PlainHeader::SIZE].try_into()?);
     let rest_enc = &read_buffer[PlainHeader::SIZE..];
 
     let nonce = plain.nonce;
