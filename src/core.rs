@@ -44,9 +44,9 @@ pub fn encrypt<'a>(
     Ok(new_file_path)
 }
 
-pub fn decrypt<'a>(
+pub fn decrypt(
     path_to_decrypt: &Path,
-    target_directory: &'a Path,
+    target_directory: &Path,
     key: &[u8],
 ) -> anyhow::Result<PathBuf> {
     let key: Key<Aes256Gcm> = *Key::<Aes256Gcm>::from_slice(key);
