@@ -19,7 +19,7 @@ pub fn encrypt<'a>(
 
     let filename = path_to_encrypt
         .file_name()
-        .context("Could not get file stem")?;
+        .context("Could not get file name")?;
     let mut file = File::open(path_to_encrypt).context("Could not open file")?;
 
     let mut plain_buffer = Vec::new();
