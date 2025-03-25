@@ -64,7 +64,7 @@ pub fn decrypt(
     let decrypted = cipher.decrypt(&nonce.into(), rest_enc).unwrap();
     let size = decrypted[0];
     let name = &decrypted[1..=size as usize];
-    let name = String::from_utf8(name.to_owned()).unwrap();
+    let name = String::from_utf8(name.to_owned())?;
 
     let mut file = File::create(target_directory.join(name.clone()))?;
     file.write_all(&decrypted[(size as usize + 1)..])?;
