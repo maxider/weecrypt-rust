@@ -46,7 +46,7 @@ pub fn encrypt<'a>(
 
 pub fn decrypt<'a>(
     path_to_decrypt: &Path,
-    target_diretory: &'a Path,
+    target_directory: &'a Path,
     key: &[u8],
 ) -> anyhow::Result<PathBuf> {
     let key: Key<Aes256Gcm> = *Key::<Aes256Gcm>::from_slice(key);
@@ -66,8 +66,8 @@ pub fn decrypt<'a>(
     let name = &decrypted[1..=size as usize];
     let name = String::from_utf8(name.to_owned()).unwrap();
 
-    let mut file = File::create(target_diretory.join(name.clone()))?;
+    let mut file = File::create(target_directory.join(name.clone()))?;
     file.write_all(&decrypted[(size as usize + 1)..])?;
 
-    Ok(target_diretory.join(name))
+    Ok(target_directory.join(name))
 }
