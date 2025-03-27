@@ -50,6 +50,9 @@ impl PlainHeader {
     }
 }
 
+/// The hidden part of the header which gets encrypted. The first byte contains the length of the
+/// original file name. All Successive bytes contain the original file name. So the total Size of
+/// this struct is 1 + length of the name.
 #[derive(Debug)]
 #[repr(C)]
 pub struct HiddenHeader {
