@@ -1,1 +1,1 @@
-weecrypt is a file encrypotor written in rust. For learning purposes i've created my own file type `.wee`. This file type has a plain header which contains the used version and the salt, followed by an encrypted header containin the original file name.
+weecrypt is a file encrypotor written in rust. For learning purposes i've created my own file type `.wee`. This file type has a plain header which contains the used version and the nonce, followed by an encrypted header containin the original file name.
